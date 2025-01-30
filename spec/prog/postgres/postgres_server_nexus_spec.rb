@@ -14,7 +14,7 @@ RSpec.describe Prog::Postgres::PostgresServerNexus do
         PostgresTimeline,
         id: "f6644aae-9759-8ada-9aef-9b6cfccdc167",
         generate_walg_config: "walg config",
-        blob_storage: instance_double(MinioCluster, root_certs: "certs")
+        blob_storage: instance_double(MinioCluster, root_certs_bundle: "certs")
       ),
       vm: instance_double(
         Vm,

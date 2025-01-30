@@ -9,13 +9,16 @@ REGION = "us-east-1"
 ADMIN_URI_PATH = "/minio/admin/v3"
 
 class Minio::Client
-  def initialize(endpoint:, access_key:, secret_key:, ssl_ca_file_data:, socket: nil)
-    ca_bundle_filename = File.join(Dir.pwd, "var", "ca_bundles", Digest::SHA256.hexdigest(ssl_ca_file_data) + ".crt")
-    Util.safe_write_to_file(ca_bundle_filename, ssl_ca_file_data) unless File.exist?(ca_bundle_filename)
+  def initialize(endpoint:, access_key:, secret_key:, root_certs:, socket: nil)
+    ssl_cert_store = OpenSSL::X509::Store.new
+    ssl_cert_store.set_default_paths # include system store certs
+    root_certs.each do |cert|
+      ssl_cert_store.add_cert(OpenSSL::X509::Certificate.new(cert))
+    end
 
     @creds = {access_key: access_key, secret_key: secret_key}
     @endpoint = endpoint
-    @client = Excon.new(endpoint, socket: socket, ssl_ca_file: ca_bundle_filename)
+    @client = Excon.new(endpoint, socket: socket, ssl_cert_store: ssl_cert_store)
     @signer = Minio::HeaderSigner.new
     @crypto = Minio::Crypto.new
   end

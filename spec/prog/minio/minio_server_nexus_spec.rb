@@ -425,7 +425,7 @@ RSpec.describe Prog::Minio::MinioServerNexus do
 
   describe "#available?" do
     before do
-      allow(nx.minio_server).to receive(:cert).and_return("cert")
+      allow(OpenSSL::X509::Store).to receive(:new).and_return(instance_double(OpenSSL::X509::Store, set_default_paths: nil, add_cert: nil))
     end
 
     it "returns true if initial provisioning is set" do

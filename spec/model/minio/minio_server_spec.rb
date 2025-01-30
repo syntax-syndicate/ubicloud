@@ -76,9 +76,11 @@ RSpec.describe MinioServer do
   end
 
   it "checks pulse" do
+    expect(OpenSSL::X509::Store).to receive(:new).and_return(instance_double(OpenSSL::X509::Store, set_default_paths: nil, add_cert: nil))
+
     session = {
       ssh_session: instance_double(Net::SSH::Connection::Session),
-      minio_client: Minio::Client.new(endpoint: "https://1.2.3.4:9000", access_key: "dummy-key", secret_key: "dummy-secret", ssl_ca_file_data: "data")
+      minio_client: Minio::Client.new(endpoint: "https://1.2.3.4:9000", access_key: "dummy-key", secret_key: "dummy-secret", root_certs: ["root_certs"])
     }
 
     expect(ms.vm).to receive(:ephemeral_net4).and_return("1.2.3.4").at_least(:once)

@@ -121,9 +121,10 @@ PGHOST=/var/run/postgresql
   end
 
   it "returns list of backups" do
-    expect(postgres_timeline).to receive(:blob_storage).and_return(instance_double(MinioCluster, url: "https://blob-endpoint", root_certs: "certs")).at_least(:once)
+    expect(postgres_timeline).to receive(:blob_storage).and_return(instance_double(MinioCluster, url: "https://blob-endpoint", root_certs: ["certs"])).at_least(:once)
 
-    minio_client = Minio::Client.new(endpoint: "https://blob-endpoint", access_key: "access_key", secret_key: "secret_key", ssl_ca_file_data: "data")
+    expect(OpenSSL::X509::Store).to receive(:new).and_return(instance_double(OpenSSL::X509::Store, set_default_paths: nil, add_cert: nil))
+    minio_client = Minio::Client.new(endpoint: "https://blob-endpoint", access_key: "access_key", secret_key: "secret_key", root_certs: ["certs"])
     expect(minio_client).to receive(:list_objects).with(postgres_timeline.ubid, "basebackups_005/").and_return([instance_double(Minio::Client::Blob, key: "backup_stop_sentinel.json"), instance_double(Minio::Client::Blob, key: "unrelated_file.txt")])
     expect(Minio::Client).to receive(:new).and_return(minio_client)
 

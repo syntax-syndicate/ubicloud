@@ -2,19 +2,10 @@
 
 RSpec.describe Minio::Client do
   let(:endpoint) { "https://localhost:9000" }
-  let(:minio_client) { described_class.new(endpoint: endpoint, access_key: "minioadmin", secret_key: "minioadminpw", ssl_ca_file_data: "data") }
+  let(:minio_client) { described_class.new(endpoint: endpoint, access_key: "minioadmin", secret_key: "minioadminpw", root_certs: ["data"]) }
 
-  it "can use ssl_ca_file_data" do
-    ssl_ca_file_name = "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-    expect(File).to receive(:exist?).with(File.join(Dir.pwd, "var", "ca_bundles", ssl_ca_file_name + ".crt")).and_return(false)
-    expect(FileUtils).to receive(:mkdir_p).with(File.dirname(File.join(Dir.pwd, "var", "ca_bundles", ssl_ca_file_name + ".crt")))
-    lock_file = instance_double(File, flock: true)
-    expect(File).to receive(:open).with(File.join(Dir.pwd, "var", "ca_bundles", ssl_ca_file_name + ".crt.tmp.lock"), File::RDWR | File::CREAT).and_yield(lock_file)
-    expect(lock_file).to receive(:flock).with(File::LOCK_EX)
-    expect(File).to receive(:write)
-    expect(File).to receive(:rename).with(File.join(Dir.pwd, "var", "ca_bundles", ssl_ca_file_name + ".crt.tmp").to_s, File.join(Dir.pwd, "var", "ca_bundles", ssl_ca_file_name + ".crt"))
-
-    minio_client
+  before do
+    allow(OpenSSL::X509::Store).to receive(:new).and_return(instance_double(OpenSSL::X509::Store, set_default_paths: nil, add_cert: nil))
   end
 
   describe "admin_info" do

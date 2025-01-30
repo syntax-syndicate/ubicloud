@@ -68,8 +68,8 @@ RSpec.describe Prog::Postgres::PostgresTimelineNexus do
     let(:blob_storage_client) { instance_double(Minio::Client) }
 
     it "creates bucket and hops" do
-      expect(postgres_timeline).to receive(:blob_storage).and_return(instance_double(MinioCluster, url: "https://blob-endpoint", root_certs: "certs", admin_user: "admin", admin_password: "secret")).at_least(:once)
-      expect(Minio::Client).to receive(:new).with(endpoint: "https://blob-endpoint", access_key: "admin", secret_key: "secret", ssl_ca_file_data: "certs").and_return(admin_blob_storage_client)
+      expect(postgres_timeline).to receive(:blob_storage).and_return(instance_double(MinioCluster, url: "https://blob-endpoint", root_certs: ["certs"], admin_user: "admin", admin_password: "secret")).at_least(:once)
+      expect(Minio::Client).to receive(:new).with(endpoint: "https://blob-endpoint", access_key: "admin", secret_key: "secret", root_certs: ["certs"]).and_return(admin_blob_storage_client)
       expect(postgres_timeline).to receive(:blob_storage_client).and_return(blob_storage_client).twice
       expect(admin_blob_storage_client).to receive(:admin_add_user).with(postgres_timeline.access_key, postgres_timeline.secret_key).and_return(200)
       expect(admin_blob_storage_client).to receive(:admin_policy_add).with(postgres_timeline.ubid, postgres_timeline.blob_storage_policy).and_return(200)
@@ -175,10 +175,10 @@ RSpec.describe Prog::Postgres::PostgresTimelineNexus do
     end
 
     it "destroys blob storage and postgres timeline" do
-      expect(postgres_timeline).to receive(:blob_storage).and_return(instance_double(MinioCluster, url: "https://blob-endpoint", root_certs: "certs", admin_user: "admin", admin_password: "secret")).at_least(:once)
+      expect(postgres_timeline).to receive(:blob_storage).and_return(instance_double(MinioCluster, url: "https://blob-endpoint", root_certs: ["certs"], admin_user: "admin", admin_password: "secret")).at_least(:once)
       expect(postgres_timeline).to receive(:destroy)
 
-      expect(Minio::Client).to receive(:new).with(endpoint: postgres_timeline.blob_storage_endpoint, access_key: "admin", secret_key: "secret", ssl_ca_file_data: "certs").and_return(admin_blob_storage_client)
+      expect(Minio::Client).to receive(:new).with(endpoint: postgres_timeline.blob_storage_endpoint, access_key: "admin", secret_key: "secret", root_certs: ["certs"]).and_return(admin_blob_storage_client)
       expect(admin_blob_storage_client).to receive(:admin_remove_user).with(postgres_timeline.access_key).and_return(200)
       expect(admin_blob_storage_client).to receive(:admin_policy_remove).with(postgres_timeline.ubid).and_return(200)
       expect { nx.destroy }.to exit({"msg" => "postgres timeline is deleted"})

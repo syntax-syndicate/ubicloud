@@ -89,7 +89,7 @@ PGHOST=/var/run/postgresql
       endpoint: blob_storage_endpoint,
       access_key: access_key,
       secret_key: secret_key,
-      ssl_ca_file_data: blob_storage.root_certs
+      root_certs: blob_storage.root_certs
     )
   end
 

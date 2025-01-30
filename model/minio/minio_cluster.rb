@@ -67,7 +67,11 @@ class MinioCluster < Sequel::Model
   end
 
   def root_certs
-    root_cert_1.to_s + root_cert_2.to_s
+    [root_cert_1, root_cert_2]
+  end
+
+  def root_certs_bundle
+    root_cert_1 + root_cert_2
   end
 
   def self.redacted_columns
