@@ -16,7 +16,7 @@ class MinioCluster < Sequel::Model
   include ResourceMethods
   include SemaphoreMethods
 
-  semaphore :destroy, :reconfigure
+  semaphore :destroy, :reconfigure, :destroying
 
   plugin :column_encryption do |enc|
     enc.column :admin_password

@@ -15,7 +15,7 @@ class InferenceEndpoint < Sequel::Model
   include SemaphoreMethods
   include ObjectTag::Cleanup
 
-  semaphore :destroy, :maintenance
+  semaphore :destroy, :maintenance, :destroying
 
   def display_location
     LocationNameConverter.to_display_name(location)

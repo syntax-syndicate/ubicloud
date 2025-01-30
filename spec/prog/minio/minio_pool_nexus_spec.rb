@@ -134,7 +134,7 @@ RSpec.describe Prog::Minio::MinioPoolNexus do
 
     it "does not hop to destroy if strand label is destroy" do
       expect(nx).to receive(:when_destroy_set?).and_yield
-      expect(nx.strand).to receive(:label).and_return("destroy")
+      expect(nx.minio_pool).to receive(:destroying_set?).and_return(true)
       expect { nx.before_run }.not_to hop("destroy")
     end
   end

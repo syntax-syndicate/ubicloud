@@ -24,7 +24,8 @@ class Prog::Vm::VmPool < Prog::Base
 
   def before_run
     when_destroy_set? do
-      unless ["destroy", "wait_vms_destroy"].include?(strand.label)
+      unless vm_pool.destroying_set?
+        vm_pool.incr_destroying
         hop_destroy
       end
     end

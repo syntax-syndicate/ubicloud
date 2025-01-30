@@ -75,7 +75,8 @@ class Prog::Ai::InferenceEndpointNexus < Prog::Base
 
   def before_run
     when_destroy_set? do
-      unless ["destroy", "self_destroy"].include?(strand.label)
+      unless inference_endpoint.destroying_set?
+        inference_endpoint.incr_destroying
         hop_destroy
       end
     end

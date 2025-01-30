@@ -12,7 +12,7 @@ class MinioPool < Sequel::Model
   include ResourceMethods
   include SemaphoreMethods
 
-  semaphore :destroy, :add_additional_pool
+  semaphore :destroy, :add_additional_pool, :destroying
 
   def volumes_url
     return "/minio/dat1" if cluster.single_instance_single_drive?

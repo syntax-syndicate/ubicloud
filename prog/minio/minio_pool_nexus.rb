@@ -39,7 +39,8 @@ class Prog::Minio::MinioPoolNexus < Prog::Base
 
   def before_run
     when_destroy_set? do
-      unless ["destroy", "wait_servers_destroyed"].include?(strand.label)
+      unless minio_pool.destroying_set?
+        minio_pool.incr_destroying
         hop_destroy
       end
     end

@@ -122,9 +122,10 @@ class Prog::Vm::GithubRunner < Prog::Base
 
   def before_run
     when_destroy_set? do
-      unless ["destroy", "wait_vm_destroy"].include?(strand.label)
+      unless github_runner.destroying_set?
         register_deadline(nil, 15 * 60)
         update_billing_record
+        github_runner.incr_destroying
         hop_destroy
       end
     end
