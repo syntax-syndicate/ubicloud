@@ -20,7 +20,7 @@ class LoadBalancer < Sequel::Model
   include SemaphoreMethods
   include ObjectTag::Cleanup
   dataset_module Pagination
-  semaphore :destroy, :update_load_balancer, :rewrite_dns_records, :refresh_cert
+  semaphore :destroy, :update_load_balancer, :rewrite_dns_records, :refresh_cert, :destroying
 
   def path
     "/location/#{private_subnet.display_location}/load-balancer/#{name}"

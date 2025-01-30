@@ -39,7 +39,10 @@ class Prog::Vnet::LoadBalancerNexus < Prog::Base
 
   def before_run
     when_destroy_set? do
-      hop_destroy unless %w[destroy wait_destroy].include?(strand.label)
+      unless load_balancer.destroying_set?
+        load_balancer.incr_destroying
+        hop_destroy
+      end
     end
   end
 

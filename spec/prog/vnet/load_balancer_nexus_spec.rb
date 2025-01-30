@@ -52,18 +52,14 @@ RSpec.describe Prog::Vnet::LoadBalancerNexus do
   describe "#before_run" do
     it "hops to destroy when needed" do
       expect(nx).to receive(:when_destroy_set?).and_yield
+      expect(nx.load_balancer).to receive(:destroying_set?).and_return(false)
+      expect(nx.load_balancer).to receive(:incr_destroying)
       expect { nx.before_run }.to hop("destroy")
     end
 
     it "does not hop to destroy if already in the destroy state" do
-      expect(nx.strand).to receive(:label).and_return("destroy")
       expect(nx).to receive(:when_destroy_set?).and_yield
-      expect { nx.before_run }.not_to hop("destroy")
-    end
-
-    it "does not hop to destroy if already in the wait_destroy state" do
-      expect(nx.strand).to receive(:label).and_return("wait_destroy").at_least(:once)
-      expect(nx).to receive(:when_destroy_set?).and_yield
+      expect(nx.load_balancer).to receive(:destroying_set?).and_return(true)
       expect { nx.before_run }.not_to hop("destroy")
     end
   end
