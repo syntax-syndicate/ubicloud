@@ -650,9 +650,9 @@ RSpec.describe Prog::Vm::GithubRunner do
       expect { nx.wait_vm_destroy }.to nap(10)
     end
 
-    it "extends deadline if vm prevents destroy" do
-      expect(vm).to receive(:prevent_destroy_set?).and_return(true)
-      expect(nx).to receive(:register_deadline).with(nil, 15 * 60, allow_extension: true)
+    it "extends deadline if vm is already being destroyed" do
+      expect(vm).to receive(:destroying_set?).and_return(true)
+      expect(nx).to receive(:register_deadline).with(nil, 10 * 60, allow_extension: true)
       expect { nx.wait_vm_destroy }.to nap(10)
     end
 
