@@ -385,7 +385,7 @@ class Prog::Vm::GithubRunner < Prog::Base
           # the runner script, including OOM issues.
           # We exclude the 'Started' line to avoid exposing the JIT token.
           vm.sshable.cmd("journalctl -u runner-script -t 'run-withenv.sh' -t 'systemd' --no-pager | grep -Fv Started")
-        rescue Sshable::SshError
+        rescue *Sshable::SSH_CONNECTION_ERRORS, Sshable::SshError
           Clog.emit("Failed to move serial.log or running journalctl") { github_runner }
         end
       end
