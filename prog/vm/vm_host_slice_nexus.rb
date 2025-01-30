@@ -81,7 +81,7 @@ class Prog::Vm::VmHostSliceNexus < Prog::Base
       else
         Prog::PageNexus.assemble("#{vm_host_slice.inhost_name} is unavailable", ["VmHostSliceUnavailable", vm_host_slice.ubid], vm_host_slice.ubid)
       end
-    rescue Net::SSH::Disconnect, Net::SSH::ConnectionTimeout, Errno::ECONNRESET, Errno::ECONNREFUSED, IOError
+    rescue *Sshable::SSH_CONNECTION_ERRORS
       # Host is likely to be down, which will be handled by HostNexus. No need
       # to create a page for this case.
     end
