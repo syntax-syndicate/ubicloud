@@ -166,7 +166,6 @@ class Prog::Vm::Nexus < Prog::Base
         vm.active_billing_records.each(&:finalize)
         vm.assigned_vm_address&.active_billing_record&.finalize
         register_deadline(nil, 5 * 60)
-        vm.incr_destroying
         hop_destroy
       end
     end

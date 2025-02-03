@@ -10,7 +10,7 @@ RSpec.describe Prog::Vm::Nexus do
     }
   }
 
-  let(:st) { Strand.new }
+  let(:st) { Strand.new.tap { _1.id = "2464de61-7501-8374-9ab0-416caebe31da" } }
   let(:vm) {
     kek = StorageKeyEncryptionKey.new(
       algorithm: "aes-256-gcm", key: "key",
@@ -602,6 +602,8 @@ RSpec.describe Prog::Vm::Nexus do
   end
 
   describe "#before_run" do
+    before { allow(UBID).to receive(:decode).with(vm.ubid).and_return(vm) }
+
     it "hops to destroy when needed" do
       expect(nx).to receive(:when_destroy_set?).and_yield
       expect(vm).to receive(:destroying_set?).and_return(false)

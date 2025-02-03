@@ -14,6 +14,7 @@ module SemaphoreMethods
     end
 
     def semaphore(*names)
+      names << :destroying if names.include?(:destroy)
       (@semaphore_names ||= []).concat(names)
       names.each do |sym|
         name = sym.name

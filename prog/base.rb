@@ -52,6 +52,7 @@ end
     (@labels ||= []) << label
 
     define_method :"hop_#{label}" do
+      @strand.subject&.incr_destroying if label == :destroy
       dynamic_hop label
     end
   end
