@@ -38,7 +38,6 @@ class Prog::Test::HetznerServer < Prog::Test::Base
 
   label def fetch_hostname
     update_stack({"hostname" => hetzner_api.get_main_ip4})
-
     hop_reimage
   end
 
@@ -69,6 +68,7 @@ class Prog::Test::HetznerServer < Prog::Test::Base
       default_boot_images: frame["default_boot_images"]
     ).subject
     update_stack({"vm_host_id" => vm_host.id})
+    Clog.emit("setting up the vm host") { vm_host }
 
     hop_wait_setup_host
   end
