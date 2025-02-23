@@ -136,6 +136,7 @@ class Prog::Test::HetznerServer < Prog::Test::Base
   end
 
   label def verify_cleanup
+    decr_verify_cleanup_and_destroy
     hop_verify_vm_dir_purged
   end
 
