@@ -193,6 +193,26 @@ module Validation
     end_port ? [start_port, end_port] : [start_port]
   end
 
+  def self.validate_load_balancer_ports(ports)
+    seen_ports = {}
+
+    ports.map do |port|
+      port["src_port"] = validate_port(:src_port, port["src_port"])
+      port["dst_port"] = validate_port(:dst_port, port["dst_port"])
+      port["health_check_endpoint"] = port["health_check_endpoint"] || Prog::Vnet::LoadBalancerNexus::DEFAULT_HEALTH_CHECK_ENDPOINT
+      port["health_check_protocol"] ||= port["health_check_protocol"]
+
+      [port["src_port"], port["dst_port"]].each do |p|
+        if seen_ports[p]
+          fail ValidationFailed.new({port: "Port conflict detected: #{p} is already in use"})
+        end
+        seen_ports[p] = true
+      end
+
+      port
+    end
+  end
+
   def self.validate_port(port_name, port)
     fail ValidationFailed.new({port_name => "Port must be an integer"}) unless port.to_i.to_s == port.to_s
     fail ValidationFailed.new({port_name => "Port must be between 0 to 65535"}) unless (0..65535).cover?(port.to_i)
