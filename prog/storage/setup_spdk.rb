@@ -36,7 +36,7 @@ class Prog::Storage::SetupSpdk < Prog::Base
       allocation_weight: 0,
       vm_host_id: vm_host.id,
       cpu_count: vm_host.spdk_cpu_count,
-      hugepages: 3
+      hugepages: 4
     ) { _1.id = SpdkInstallation.generate_uuid }
 
     hop_install_spdk
