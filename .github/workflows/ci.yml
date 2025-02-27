@@ -21,14 +21,14 @@ jobs:
       DB_PASSWORD: nonempty
       DB_NAME: clover_test
 
-    services:
-      postgres:
-        image: postgres:15.4
-        env:
-          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    # services:
+    #   postgres:
+    #     image: postgres:15.4
+    #     env:
+    #       POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+    #     ports:
+    #       - 5432:5432
+    #     options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - name: Check out code
@@ -48,6 +48,10 @@ jobs:
     - name: Install node packages
       run: npm ci
 
+    - uses: ikalnytskyi/action-setup-postgres@v7
+      with:
+        postgres-version: "15"
+
     - name: Run erb-formatter
       run: bundle exec rake linter:erb_formatter
 
@@ -63,11 +67,11 @@ jobs:
     - name: Run overwrite_envrb
       run: bundle exec rake overwrite_envrb
 
-    - name: Enable SSH
-      uses: enescakir/ssh-action@main
-      with:
-        public-ssh-key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsY2oTeeKCK8pr339MREPlai6bvnlnCX3pvCCBKoJ7c enes@cakir.web.tr"
-        wait-minutes: 60
+    # - name: Enable SSH
+    #   uses: enescakir/ssh-action@main
+    #   with:
+    #     public-ssh-key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsY2oTeeKCK8pr339MREPlai6bvnlnCX3pvCCBKoJ7c enes@cakir.web.tr"
+    #     wait-minutes: 60
 
     - name: Setup database and apply migrations
       run: bundle exec rake setup_database\[test,true\]
