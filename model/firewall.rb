@@ -6,7 +6,6 @@ class Firewall < Sequel::Model
   many_to_one :project
   one_to_many :firewall_rules, key: :firewall_id
   many_to_many :private_subnets
-
   plugin :association_dependencies, firewall_rules: :destroy
 
   include ResourceMethods
@@ -15,7 +14,7 @@ class Firewall < Sequel::Model
   dataset_module Pagination
 
   def display_location
-    LocationNameConverter.to_display_name(location)
+    Location[location_id].display_name
   end
 
   def path
@@ -80,11 +79,13 @@ end
 #  created_at  | timestamp without time zone | NOT NULL DEFAULT CURRENT_TIMESTAMP
 #  location    | text                        | NOT NULL
 #  project_id  | uuid                        | NOT NULL
+#  location_id | uuid                        |
 # Indexes:
 #  firewall_pkey                          | PRIMARY KEY btree (id)
 #  firewall_project_id_location_name_uidx | UNIQUE btree (project_id, location, name)
 # Foreign key constraints:
-#  firewall_project_id_fkey | (project_id) REFERENCES project(id)
+#  firewall_location_id_fkey | (location_id) REFERENCES location(id)
+#  firewall_project_id_fkey  | (project_id) REFERENCES project(id)
 # Referenced By:
 #  firewall_rule             | firewall_rule_firewall_id_fkey             | (firewall_id) REFERENCES firewall(id)
 #  firewalls_private_subnets | firewalls_private_subnets_firewall_id_fkey | (firewall_id) REFERENCES firewall(id)

@@ -27,7 +27,7 @@ class Prog::Test::PostgresResource < Prog::Test::Base
   label def start
     st = Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: frame["postgres_test_project_id"],
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "postgres-test-standard",
       target_vm_size: "standard-2",
       target_storage_size_gib: 128

@@ -18,6 +18,7 @@ class VmHost < Sequel::Model
   one_to_many :boot_images, key: :vm_host_id
   one_to_many :slices, class: :VmHostSlice, key: :vm_host_id
   one_to_many :cpus, class: :VmHostCpu, key: :vm_host_id
+  many_to_one :location, key: :location_id, class: :Location
 
   plugin :association_dependencies, assigned_host_addresses: :destroy, assigned_subnets: :destroy, provider: :destroy, spdk_installations: :destroy, storage_devices: :destroy, pci_devices: :destroy, boot_images: :destroy, slices: :destroy, cpus: :destroy
 
@@ -411,6 +412,7 @@ end
 #  total_dies         | integer                  |
 #  os_version         | text                     |
 #  accepts_slices     | boolean                  | NOT NULL DEFAULT false
+#  location_id        | uuid                     |
 # Indexes:
 #  vm_host_pkey     | PRIMARY KEY btree (id)
 #  vm_host_ip6_key  | UNIQUE btree (ip6)
@@ -420,7 +422,8 @@ end
 #  hugepages_allocation_limit | (used_hugepages_1g <= total_hugepages_1g)
 #  used_cores_above_zero      | (used_cores >= 0)
 # Foreign key constraints:
-#  vm_host_id_fkey | (id) REFERENCES sshable(id)
+#  vm_host_id_fkey          | (id) REFERENCES sshable(id)
+#  vm_host_location_id_fkey | (location_id) REFERENCES location(id)
 # Referenced By:
 #  address               | address_routed_to_host_id_fkey     | (routed_to_host_id) REFERENCES vm_host(id)
 #  assigned_host_address | assigned_host_address_host_id_fkey | (host_id) REFERENCES vm_host(id)

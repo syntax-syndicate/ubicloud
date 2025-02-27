@@ -7,7 +7,7 @@ RSpec.describe Clover, "cli pg show" do
     expect(Config).to receive(:postgres_service_project_id).and_return(@project.id).at_least(:once)
     @pg = Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: @project.id,
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "test-pg",
       target_vm_size: "standard-2",
       target_storage_size_gib: 64
@@ -34,7 +34,7 @@ RSpec.describe Clover, "cli pg show" do
       flavor: standard
       connection_string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.pg.example.com?channel_binding=require
       primary: true
-      earliest_restore_time: 
+      earliest_restore_time:
       firewall rules:
         1: #{@pg.firewall_rules[0].ubid}  0.0.0.0/0
       metric destinations:

@@ -12,6 +12,7 @@ class MinioCluster < Sequel::Model
   end
   one_to_one :strand, key: :id
   many_to_one :private_subnet, key: :private_subnet_id
+  many_to_one :location, key: :location_id
 
   include ResourceMethods
   include SemaphoreMethods
@@ -84,10 +85,12 @@ end
 #  root_cert_key_2             | text                        |
 #  certificate_last_checked_at | timestamp with time zone    | NOT NULL DEFAULT now()
 #  project_id                  | uuid                        | NOT NULL
+#  location_id                 | uuid                        |
 # Indexes:
 #  minio_cluster_pkey                          | PRIMARY KEY btree (id)
 #  minio_cluster_project_id_location_name_uidx | UNIQUE btree (project_id, location, name)
 # Foreign key constraints:
+#  minio_cluster_location_id_fkey       | (location_id) REFERENCES location(id)
 #  minio_cluster_private_subnet_id_fkey | (private_subnet_id) REFERENCES private_subnet(id)
 #  minio_cluster_project_id_fkey        | (project_id) REFERENCES project(id)
 # Referenced By:

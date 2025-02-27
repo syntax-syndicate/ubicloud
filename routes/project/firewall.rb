@@ -24,7 +24,7 @@ class Clover
       end
 
       r.post true do
-        @location = LocationNameConverter.to_internal_name(r.params["location"])
+        @location = Location[r.params["location"]]
         firewall_post(r.params["name"])
       end
     end

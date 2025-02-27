@@ -43,7 +43,7 @@ class Prog::Test::HaPostgresResource < Prog::Test::Base
   label def create_postgres_resource
     st = Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: frame["postgres_test_project_id"],
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "postgres-test-ha",
       target_vm_size: "standard-2",
       target_storage_size_gib: 128,

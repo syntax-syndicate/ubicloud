@@ -9,7 +9,7 @@ RSpec.describe Clover, "cli pg list" do
     expect(Config).to receive(:postgres_service_project_id).and_return(@project.id).at_least(:once)
     @pg = Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: @project.id,
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "test-pg",
       target_vm_size: "standard-2",
       target_storage_size_gib: 64
@@ -31,7 +31,7 @@ RSpec.describe Clover, "cli pg list" do
 
   it "headers are shown by default" do
     expect(cli(%w[pg list])).to eq <<~END
-      location       name     #{id_headr}  version  flavor  
+      location       name     #{id_headr}  version  flavor
       eu-central-h1  test-pg  #{@pg.ubid}  16       standard
     END
   end
@@ -39,7 +39,7 @@ RSpec.describe Clover, "cli pg list" do
   it "handles case where header size is larger than largest column size" do
     @pg.update(name: "Abc")
     expect(cli(%w[pg list])).to eq <<~END
-      location       name  #{id_headr}  version  flavor  
+      location       name  #{id_headr}  version  flavor
       eu-central-h1  Abc   #{@pg.ubid}  16       standard
     END
   end

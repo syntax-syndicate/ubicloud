@@ -14,8 +14,8 @@ RSpec.describe Clover, "Kubernetes" do
       name: "myk8s",
       version: "v1.32",
       project_id: project.id,
-      private_subnet_id: PrivateSubnet.create(net6: "0::0", net4: "127.0.0.1", name: "mysubnet", location: "hetzner-fsn1", project_id: project.id).id,
-      location: "hetzner-fsn1"
+      private_subnet_id: PrivateSubnet.create(net6: "0::0", net4: "127.0.0.1", name: "mysubnet", location_id: "caa7a807-36c5-8420-a75c-f906839dad71", project_id: project.id).id,
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71"
     ).subject
   end
 
@@ -24,8 +24,8 @@ RSpec.describe Clover, "Kubernetes" do
       name: "not-my-k8s",
       version: "v1.32",
       project_id: project_wo_permissions.id,
-      private_subnet_id: PrivateSubnet.create(net6: "0::0", net4: "127.0.0.1", name: "othersubnet", location: "x", project_id: project_wo_permissions.id).id,
-      location: "hetzner-fsn1"
+      private_subnet_id: PrivateSubnet.create(net6: "0::0", net4: "127.0.0.1", name: "othersubnet", location_id: "caa7a807-36c5-8420-a75c-f906839dad71", project_id: project_wo_permissions.id).id,
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71"
     ).subject
   end
 
@@ -129,7 +129,7 @@ RSpec.describe Clover, "Kubernetes" do
 
       it "can create new kubernetes cluster" do
         fill_in "Name", with: "k8stest"
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: 3
         select 2, from: "worker_nodes"
 
@@ -148,7 +148,7 @@ RSpec.describe Clover, "Kubernetes" do
 
       it "can not create kubernetes cluster with invalid name" do
         fill_in "Name", with: "invalid name"
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: 3
         select 2, from: "worker_nodes"
 
@@ -160,17 +160,17 @@ RSpec.describe Clover, "Kubernetes" do
 
       it "can not create kubernetes cluster with same name in same project & location" do
         fill_in "Name", with: "myk8s"
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: 3
         select 2, from: "worker_nodes"
 
         click_button "Create"
         expect(page.title).to eq("Ubicloud - Create Kubernetes Cluster")
-        expect(page).to have_flash_error("project_id and location and name is already taken")
+        expect(page).to have_flash_error("project_id and location_id and name is already taken")
       end
 
       it "can not select invisible location" do
-        expect { choose option: "github-runners" }.to raise_error Capybara::ElementNotFound
+        expect { choose option: "6b9ef786-b842-8420-8c65-c25e3d4bdf3d" }.to raise_error Capybara::ElementNotFound
       end
 
       it "can not create kubernetes cluster in a project when does not have permissions" do

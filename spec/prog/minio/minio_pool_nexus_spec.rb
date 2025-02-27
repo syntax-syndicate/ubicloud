@@ -7,7 +7,7 @@ RSpec.describe Prog::Minio::MinioPoolNexus do
 
   let(:minio_cluster) {
     MinioCluster.create_with_id(
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "minio-cluster-name",
       admin_user: "minio-admin",
       admin_password: "dummy-password",
@@ -16,7 +16,7 @@ RSpec.describe Prog::Minio::MinioPoolNexus do
     )
   }
   let(:ps) {
-    Prog::Vnet::SubnetNexus.assemble(minio_project.id, name: "minio-cluster-name")
+    Prog::Vnet::SubnetNexus.assemble(minio_project.id, name: "minio-cluster-name", location_id: "caa7a807-36c5-8420-a75c-f906839dad71")
   }
 
   let(:minio_project) { Project.create_with_id(name: "default") }

@@ -10,7 +10,7 @@ RSpec.describe Clover, "postgres" do
   let(:pg) do
     Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: project.id,
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "pg-with-permission",
       target_vm_size: "standard-2",
       target_storage_size_gib: 128
@@ -20,7 +20,7 @@ RSpec.describe Clover, "postgres" do
   let(:pg_wo_permission) do
     Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: project_wo_permissions.id,
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "pg-without-permission",
       target_vm_size: "standard-2",
       target_storage_size_gib: 128
@@ -81,7 +81,7 @@ RSpec.describe Clover, "postgres" do
         expect(page.title).to eq("Ubicloud - Create PostgreSQL Database")
         name = "new-pg-db"
         fill_in "Name", with: name
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: "standard-2"
         choose option: PostgresResource::HaType::NONE
 
@@ -99,7 +99,7 @@ RSpec.describe Clover, "postgres" do
         expect(page.title).to eq("Ubicloud - Create PostgreSQL Database")
         name = "new-pg-db"
         fill_in "Name", with: name
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: "standard-60"
         choose option: PostgresResource::HaType::NONE
 
@@ -119,7 +119,7 @@ RSpec.describe Clover, "postgres" do
         expect(page.title).to eq("Ubicloud - Create ParadeDB PostgreSQL Database")
         name = "new-pg-db"
         fill_in "Name", with: name
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: "standard-2"
         choose option: PostgresResource::HaType::NONE
         check "Accept Terms of Service and Privacy Policy"
@@ -147,14 +147,14 @@ RSpec.describe Clover, "postgres" do
         expect(page.title).to eq("Ubicloud - Create PostgreSQL Database")
 
         fill_in "Name", with: pg.name
-        choose option: "eu-central-h1"
+        choose option: "caa7a807-36c5-8420-a75c-f906839dad71"
         choose option: "standard-2"
         choose option: PostgresResource::HaType::NONE
 
         click_button "Create"
 
         expect(page.title).to eq("Ubicloud - Create PostgreSQL Database")
-        expect(page).to have_flash_error("project_id and location and name is already taken")
+        expect(page).to have_flash_error("project_id and location_id and name is already taken")
       end
 
       it "can not select invisible location" do

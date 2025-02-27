@@ -9,11 +9,11 @@ RSpec.describe Prog::Test::ConnectedSubnets do
   }
 
   let(:ps_multiple) {
-    Prog::Vnet::SubnetNexus.assemble(project.id, name: "ps-multiple", location: "hetzner-fsn1").subject
+    Prog::Vnet::SubnetNexus.assemble(project.id, name: "ps-multiple", location_id: "caa7a807-36c5-8420-a75c-f906839dad71").subject
   }
 
   let(:ps_single) {
-    Prog::Vnet::SubnetNexus.assemble(project.id, name: "ps-single", location: "hetzner-fsn1").subject
+    Prog::Vnet::SubnetNexus.assemble(project.id, name: "ps-single", location_id: "caa7a807-36c5-8420-a75c-f906839dad71").subject
   }
 
   let(:project) {

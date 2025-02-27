@@ -28,7 +28,7 @@ class Prog::Test::VmGroup < Prog::Test::Base
     project.set_ff_use_slices_for_allocation(test_slices)
 
     size_options = test_slices ? ["standard-2", "burstable-1"] : ["standard-2"]
-    subnets = Array.new(2) { Prog::Vnet::SubnetNexus.assemble(project.id, name: "subnet-#{_1}", location: "hetzner-fsn1") }
+    subnets = Array.new(2) { Prog::Vnet::SubnetNexus.assemble(project.id, name: "subnet-#{_1}", location_id: "caa7a807-36c5-8420-a75c-f906839dad71") }
     encrypted = frame.fetch("storage_encrypted", true)
     boot_images = frame.fetch("boot_images")
     storage_options = [

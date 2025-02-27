@@ -17,7 +17,7 @@ class Clover
         filter = {Sequel[:firewall][:id] => UBID.to_uuid(firewall_id)}
       end
 
-      filter[:location] = @location
+      filter[:location_id] = @location.id
       firewall = @project.firewalls_dataset.first(filter)
 
       next (r.delete? ? 204 : 404) unless firewall
@@ -36,7 +36,7 @@ class Clover
         if api?
           @firewall
         else
-          project_subnets = dataset_authorize(@project.private_subnets_dataset.where(location: @location), "PrivateSubnet:view").all
+          project_subnets = dataset_authorize(@project.private_subnets_dataset.where(location_id: @location.id), "PrivateSubnet:view").all
           attached_subnets = firewall.private_subnets_dataset.all
           @attachable_subnets = Serializers::PrivateSubnet.serialize(project_subnets.reject { |ps| attached_subnets.find { |as| as.id == ps.id } })
 
@@ -50,9 +50,9 @@ class Clover
         private_subnet_id = validate_request_params(["private_subnet_id"])["private_subnet_id"]
         private_subnet = PrivateSubnet.from_ubid(private_subnet_id)
 
-        unless private_subnet && private_subnet.location == @location
+        unless private_subnet && private_subnet.location_id == @location.id
           if api?
-            fail Validation::ValidationFailed.new({private_subnet_id: "Private subnet with the given id \"#{private_subnet_id}\" and the location \"#{@location}\" is not found"})
+            fail Validation::ValidationFailed.new({private_subnet_id: "Private subnet with the given id \"#{private_subnet_id}\" and the location \"#{@location.display_name}\" is not found"})
           else
             flash["error"] = "Private subnet not found"
             r.redirect "#{@project.path}#{firewall.path}"

@@ -98,14 +98,14 @@ RSpec.describe Clover, "private_subnet" do
 
       it "not authorized" do
         project
-        post "/project/#{project_wo_permissions.ubid}/location/#{ps_wo_permission.location}/private-subnet/foo_subnet"
+        post "/project/#{project_wo_permissions.ubid}/location/#{ps_wo_permission.location.display_name}/private-subnet/foo_subnet"
 
         expect(last_response.content_type).to eq("application/json")
         expect(last_response).to have_api_error(403)
       end
 
       it "with valid firewall" do
-        fw = Firewall.create_with_id(name: "default-firewall", location: "hetzner-fsn1", project_id: project.id)
+        fw = Firewall.create_with_id(name: "default-firewall", location_id: "caa7a807-36c5-8420-a75c-f906839dad71", project_id: project.id)
         post "/project/#{project.ubid}/location/#{TEST_LOCATION}/private-subnet/test-ps", {firewall_id: fw.ubid}.to_json
 
         expect(last_response.status).to eq(200)
@@ -117,7 +117,7 @@ RSpec.describe Clover, "private_subnet" do
       it "with invalid firewall id" do
         post "/project/#{project.ubid}/location/#{TEST_LOCATION}/private-subnet/test-ps", {firewall_id: "invalidid"}.to_json
 
-        expect(last_response).to have_api_error(400, "Validation failed for following fields: firewall_id", {"firewall_id" => "Firewall with id \"invalidid\" and location \"hetzner-fsn1\" is not found"})
+        expect(last_response).to have_api_error(400, "Validation failed for following fields: firewall_id", {"firewall_id" => "Firewall with id \"invalidid\" and location \"eu-central-h1\" is not found"})
       end
 
       it "with empty body" do
@@ -173,7 +173,7 @@ RSpec.describe Clover, "private_subnet" do
       end
 
       it "not exist ubid in location" do
-        delete "/project/#{project.ubid}/location/foo_location/private-subnet/_#{ps.ubid}"
+        delete "/project/#{project.ubid}/location/us-east-a2/private-subnet/_#{ps.ubid}"
 
         expect(last_response.status).to eq(204)
         expect(SemSnap.new(ps.id).set?("destroy")).to be false

@@ -8,7 +8,7 @@ RSpec.describe StorageDevice do
     context "when the device is not a RAID (non-RAID disk)" do
       it "sets unix_device_list to the device name and saves changes" do
         sa = Sshable.create_with_id(host: "test.localhost", raw_private_key_1: SshKey.generate.keypair)
-        vmh = VmHost.create(location: "test-location") { _1.id = sa.id }
+        vmh = VmHost.create(location_id: "caa7a807-36c5-8420-a75c-f906839dad71") { _1.id = sa.id }
         storage_device = described_class.create_with_id(vm_host_id: vmh.id, name: "DEFAULT", total_storage_gib: 100, available_storage_gib: 100)
 
         allow(storage_device.vm_host.sshable).to receive(:cmd).with(SystemParser.df_command("/var/storage")).and_return(<<~EOS)
@@ -25,7 +25,7 @@ RSpec.describe StorageDevice do
     context "when the device is a non-RAID disk and is not the default disk" do
       it "sets unix_device_list to the device name and saves changes" do
         sa = Sshable.create_with_id(host: "test.localhost", raw_private_key_1: SshKey.generate.keypair)
-        vmh = VmHost.create(location: "test-location") { _1.id = sa.id }
+        vmh = VmHost.create(location_id: "caa7a807-36c5-8420-a75c-f906839dad71") { _1.id = sa.id }
         storage_device = described_class.create_with_id(vm_host_id: vmh.id, name: "sdc", total_storage_gib: 100, available_storage_gib: 100)
 
         allow(storage_device.vm_host.sshable).to receive(:cmd).with(SystemParser.df_command("/var/storage/devices/sdc")).and_return(<<~EOS)
@@ -42,7 +42,7 @@ RSpec.describe StorageDevice do
     context "when the device is a RAID (RAID disk)" do
       it "extracts RAID component devices and sets them as unix_devices" do
         sa = Sshable.create_with_id(host: "test.localhost", raw_private_key_1: SshKey.generate.keypair)
-        vmh = VmHost.create(location: "test-location") { _1.id = sa.id }
+        vmh = VmHost.create(location_id: "caa7a807-36c5-8420-a75c-f906839dad71") { _1.id = sa.id }
         storage_device = described_class.create_with_id(vm_host_id: vmh.id, name: "DEFAULT", total_storage_gib: 100, available_storage_gib: 100)
 
         allow(storage_device.vm_host.sshable).to receive(:cmd).with(SystemParser.df_command("/var/storage")).and_return(<<~EOS)
@@ -68,7 +68,7 @@ RSpec.describe StorageDevice do
     context "when there is no mount point or device info available" do
       it "does not set unix_devices and raises an error if df output is invalid" do
         sa = Sshable.create_with_id(host: "test.localhost", raw_private_key_1: SshKey.generate.keypair)
-        vmh = VmHost.create(location: "test-location") { _1.id = sa.id }
+        vmh = VmHost.create(location_id: "caa7a807-36c5-8420-a75c-f906839dad71") { _1.id = sa.id }
         storage_device = described_class.create_with_id(vm_host_id: vmh.id, name: "DEFAULT", total_storage_gib: 100, available_storage_gib: 100)
 
         allow(storage_device.vm_host.sshable).to receive(:cmd).with(SystemParser.df_command("/var/storage")).and_return("Invalid output")

@@ -8,6 +8,7 @@ class InferenceEndpoint < Sequel::Model
   one_to_many :replicas, class: :InferenceEndpointReplica, key: :inference_endpoint_id
   one_to_one :load_balancer, key: :id, primary_key: :load_balancer_id
   one_to_one :private_subnet, key: :id, primary_key: :private_subnet_id
+  many_to_one :location, key: :location_id, class: :Location
 
   dataset_module Pagination
 
@@ -18,7 +19,7 @@ class InferenceEndpoint < Sequel::Model
   semaphore :destroy, :maintenance
 
   def display_location
-    LocationNameConverter.to_display_name(location)
+    location.display_name
   end
 
   def path
@@ -68,10 +69,12 @@ end
 #  max_requests      | integer                  | NOT NULL DEFAULT 500
 #  max_project_rps   | integer                  | NOT NULL DEFAULT 100
 #  max_project_tps   | integer                  | NOT NULL DEFAULT 10000
+#  location_id       | uuid                     |
 # Indexes:
 #  inference_endpoint_pkey | PRIMARY KEY btree (id)
 # Foreign key constraints:
 #  inference_endpoint_load_balancer_id_fkey  | (load_balancer_id) REFERENCES load_balancer(id)
+#  inference_endpoint_location_id_fkey       | (location_id) REFERENCES location(id)
 #  inference_endpoint_private_subnet_id_fkey | (private_subnet_id) REFERENCES private_subnet(id)
 #  inference_endpoint_project_id_fkey        | (project_id) REFERENCES project(id)
 # Referenced By:

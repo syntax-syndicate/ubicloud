@@ -26,12 +26,12 @@ RSpec.describe Prog::Postgres::PostgresTimelineNexus do
   describe ".assemble" do
     it "throws an exception if parent is not found" do
       expect {
-        described_class.assemble(location: "hetzner-fsn1", parent_id: "69c0f4cd-99c1-8ed0-acfe-7b013ce2fa0b")
+        described_class.assemble(location_id: "caa7a807-36c5-8420-a75c-f906839dad71", parent_id: "69c0f4cd-99c1-8ed0-acfe-7b013ce2fa0b")
       }.to raise_error RuntimeError, "No existing parent"
     end
 
     it "creates postgres timeline" do
-      st = described_class.assemble(location: "hetzner-fsn1")
+      st = described_class.assemble(location_id: "caa7a807-36c5-8420-a75c-f906839dad71")
 
       postgres_timeline = PostgresTimeline[st.id]
       expect(postgres_timeline).not_to be_nil
@@ -41,9 +41,9 @@ RSpec.describe Prog::Postgres::PostgresTimelineNexus do
       project = Project.create_with_id(name: "mc-project")
       expect(Config).to receive(:minio_service_project_id).and_return(project.id).at_least(:once)
       expect(Config).to receive(:postgres_service_project_id).and_return(project.id)
-      mc = Prog::Minio::MinioClusterNexus.assemble(project.id, "minio", "hetzner-fsn1", "minio-admin", 100, 1, 1, 1, "standard-2").subject
+      mc = Prog::Minio::MinioClusterNexus.assemble(project.id, "minio", "caa7a807-36c5-8420-a75c-f906839dad71", "minio-admin", 100, 1, 1, 1, "standard-2").subject
 
-      st = described_class.assemble(location: "hetzner-fsn1")
+      st = described_class.assemble(location_id: "caa7a807-36c5-8420-a75c-f906839dad71")
 
       postgres_timeline = PostgresTimeline[st.id]
       expect(postgres_timeline.blob_storage_id).to eq(mc.id)

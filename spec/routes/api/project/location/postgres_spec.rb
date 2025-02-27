@@ -10,7 +10,7 @@ RSpec.describe Clover, "postgres" do
   let(:pg) do
     Prog::Postgres::PostgresResourceNexus.assemble(
       project_id: project.id,
-      location: "hetzner-fsn1",
+      location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
       name: "pg-with-permission",
       target_vm_size: "standard-2",
       target_storage_size_gib: 128
@@ -70,7 +70,7 @@ RSpec.describe Clover, "postgres" do
       it "success multiple" do
         Prog::Postgres::PostgresResourceNexus.assemble(
           project_id: project.id,
-          location: "hetzner-fsn1",
+          location_id: "caa7a807-36c5-8420-a75c-f906839dad71",
           name: "pg-test-2",
           target_vm_size: "standard-2",
           target_storage_size_gib: 128
@@ -373,7 +373,7 @@ RSpec.describe Clover, "postgres" do
       end
 
       it "not exist ubid in location" do
-        delete "/project/#{project.ubid}/location/foo_location/postgres/_#{pg.ubid}"
+        delete "/project/#{project.ubid}/location/us-east-a2/postgres/_#{pg.ubid}"
 
         expect(last_response.status).to eq(204)
         expect(SemSnap.new(pg.id).set?("destroy")).to be false
