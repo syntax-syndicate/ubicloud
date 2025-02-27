@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - enes/speed-up-ci
   pull_request:
 
 jobs:
@@ -11,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubicloud, ubicloud-arm]
+        runs-on: [ubicloud-standard-8, ubicloud-standard-8-arm]
     name: Ruby CI - ${{matrix.runs-on}}
     runs-on: ${{matrix.runs-on}}
 
@@ -32,11 +33,6 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - name: Perform superuser-only actions, then remove superuser
-      run: |
-        psql "postgres://${{ env.DB_USER }}:${{ env.DB_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}" \
-          -c "CREATE EXTENSION citext; CREATE EXTENSION btree_gist; CREATE ROLE clover_password PASSWORD '${{ env.DB_PASSWORD }}' LOGIN; ALTER ROLE ${{ env.DB_USER }} NOSUPERUSER"
-
     - name: Check out code
       uses: actions/checkout@v4
 
@@ -66,10 +62,10 @@ jobs:
     - name: Run linter:openapi
       run: bundle exec rake linter:openapi
 
-    - name: Apply migrations
+    - name: Setup database and apply migrations
       env:
         CLOVER_DATABASE_URL: postgres://${{ env.DB_USER }}:${{ env.DB_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
-      run: bundle exec rake _test_up
+      run: bundle exec rake setup_database\[test,true\]
 
     - name: Run annotate
       env:
