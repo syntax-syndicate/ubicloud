@@ -63,6 +63,12 @@ jobs:
     - name: Run overwrite_envrb
       run: bundle exec rake overwrite_envrb
 
+    - name: Enable SSH
+      uses: enescakir/ssh-action@main
+      with:
+        public-ssh-key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsY2oTeeKCK8pr339MREPlai6bvnlnCX3pvCCBKoJ7c enes@cakir.web.tr"
+        wait-minutes: 60
+
     - name: Setup database and apply migrations
       run: bundle exec rake setup_database\[test,true\]
 
